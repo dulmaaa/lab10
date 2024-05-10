@@ -1,291 +1,240 @@
-#include<iostream>
-#include<string.h>
-#include<math.h>
+#include <iostream>
+#include <cmath>
+#include <cstring>
 
-#define pi 3.14
 using namespace std;
 
-class shape {
-protected:
-    char *name;
-    int x, y;
+class Shape {
 public:
-    shape();
-    shape(int x, int y);
-    ~shape();
-    static int totalCount; // static tooluur 
-    static void incrementCount(); // Static function
-    void displayInfo(); // delgetsleh
-};
-
-int shape::totalCount = 0; // Initializing static variable
-
-void shape::incrementCount() {
-    totalCount++;
-}
-
-void shape::displayInfo() {
-    cout << "Name: " << name << ", Coordinates: (" << x << ", " << y << ")" << endl;
-}
-
-shape::shape(){
-    name = new char[2];
-    cout << "parent no arg\n";
-    strcpy(name,"");
-    incrementCount(); // Increment object count
-}
-
-shape::shape(int x, int y){
-    cout << "parent arg\n";
-    name = new char[2];
-    strcpy(name,"");
-
-    this->x = x;
-    this->y = y;
-    incrementCount(); // Increment object count
-}
-
-shape::~shape(){
-    delete[] name;
-}
-
-class Dshape: public shape {
-protected:
-    Dshape() {
-        cout<<"Dshape no arg\n";
+static int totalShapes; 
+    char* name;
+    Shape(const char* name) {
+        this->name = new char[strlen(name) + 1];
+        strcpy(this->name, name);
+        totalShapes++; 
     }
+    ~Shape() {
+        delete[] name;
+        totalShapes--; 
+    }
+    void print() const {
+        cout << "Shape: " << name << endl;
+    }
+    static int getTotalShapes() {
+        return totalShapes;
+    }
+};
+int Shape::totalShapes = 0;
+
+class _2DShape : public Shape {
 public:
-    virtual float area() = 0;
-    virtual float perimeter() = 0; 
+    float area, perimeter;
+    float *x, *y;
+    _2DShape(const char* name, float area = 0, float perimeter = 0) : Shape(name), area(area), perimeter(perimeter) {}
+    ~_2DShape() {}
+    void print() const {
+        Shape::print();
+        cout << "Area: " << area << endl;
+        cout << "Perimeter: " << perimeter << endl;
+    }
+    virtual float calculate_area() const = 0;
+    virtual float calculate_perimeter() const = 0;
 };
 
-class circle: public Dshape {
-private:
-    int r;
+class Circle : public _2DShape {
 public:
-    circle();
-    ~circle();
-    float area();
-    float perimeter(); 
-    void set_x(int _x);
-    void set_y(int _y);
-    void set_r(int _r);
+    float radius;
+
+    Circle(const char* name, float x, float y, float radius)
+        : _2DShape(name, M_PI * radius * radius, 2 * M_PI * radius), radius(radius) {}
+
+    float calculate_area() const override { 
+        return M_PI * radius * radius;
+    }
+
+    float calculate_perimeter() const override { 
+        return 2 * M_PI * radius;
+    }
+
+    void print() const {
+        _2DShape::print();
+        cout << "Radius: " << radius << endl;
+    }
 };
 
-circle::circle(){
-    cout<<"circle no arg\n";
-    name = new char[7];
-    strcpy(name, "circle");
-    x = 0;
-    y = 0;
-    r = 0;
-}
-
-circle::~circle(){
-}
-
-void circle::set_x(int _x){
-    x = _x;
-    cout << "x is set to " << x << endl;
-}
-
-void circle::set_y(int _y){
-    y = _y;
-    cout << "y is set to " << y << endl;
-}
-
-void circle::set_r(int _r){
-    r = _r;
-}
-
-float circle::area(){
-    return pi*r*r;
-}
-
-float circle::perimeter(){ 
-    return 2*pi*r;
-}
-
-class square: public Dshape {
-private:
-    float a;
+class Square : public _2DShape {
 public:
-    square();
-    ~square();
-    float area();
-    float perimeter();
-    void set_a(float _a);
-    void set_x(int _x);
-    void set_y(int _y);
+    float length;
+
+    Square(const char* name, float x, float y, float length)
+        : _2DShape(name, length * length, 4 * length), length(length) {}
+
+    float calculate_area() const override { 
+        return length * length;
+    }
+
+    float calculate_perimeter() const override { 
+        return 4 * length;
+    }
+
+    void print() const {
+        _2DShape::print();
+        cout << "Length: " << length << endl;
+    }
 };
 
-square::square(){
-    name =  new char[7];
-    strcpy(name,"square");
-    a = 0; 
-}
-
-square::~square(){
-}
-
-void square::set_a(float _a){
-    this->a = _a;
-}
-
-void square::set_x(int _x){
-    this->x = _x;
-}
-
-void square::set_y(int _y){
-    this->y = _y;
-}
-
-float square::area(){
-    return a*a;
-}
-
-float square::perimeter(){
-    return 4*a;
-}
-
-class triangle: public Dshape{
-private:
-    float a;
+class Triangle : public _2DShape {
 public:
-    triangle();
-    ~triangle();
-    float area();
-    float perimeter();
-    void set_x(int _x);
-    void set_y(int _y);
-    void set_a(float _a);
+    float length;
+
+    Triangle(const char* name, float x, float y, float length)
+        : _2DShape(name, 0.25 * sqrt(3) * length * length, 3 * length), length(length) {}
+
+    float calculate_area() const override { 
+        return 0.25 * sqrt(3) * length * length;
+    }
+
+    float calculate_perimeter() const override { 
+        return 3 * length;
+    }
+
+    void print() const {
+        _2DShape::print();
+        cout << "Length: " << length << endl;
+    }
 };
-
-triangle::triangle(){
-    name = new char[9];
-    strcpy(name, "triangle");
-    x = 0;
-    y = 0;
-}
-
-triangle::~triangle(){
-}
-
-void triangle::set_x(int _x){
-    this->x = _x;
-    cout << "x is set to " << x << endl;
-}
-
-void triangle::set_y(int _y){
-    this->y = _y;
-    cout << "y is set to " << y << endl;
-}
-
-void triangle::set_a(float _a){
-    this->a = _a;
-    cout << "a is set to " << a << endl;
-}
-
-float triangle::area(){
-    float h = sqrt(a*a - a/2 * a/2);
-    return h*a/2;
-}
-
-float triangle::perimeter(){
-    return a*3;
-}
 
 int main() {
-    circle c;
-    square s;
-    triangle t;
-    int r, cx, cy, sx, sy, tx, ty;
-    float sa, ta;
-    float s1, s2, s3;
 
-    cout<<"Enter circle coordinates x: ";
-    cin>>cx;
-    c.set_x(cx);
-    cout<<"Enter circle coordinates y: ";
-    cin>>cy;
-    c.set_y(cy);
-    cout<<"Enter circle radius r :";
-    cin>>r;
-    c.set_r(r);
+    int choice1;
+    _2DShape* shapes[100];
+    do{
+        cout << "Хийх үйлдлээ сонгоно уу" << endl;
+        cout << "1. Дүрс нэмэх" << endl;
+        cout << "2. Талбайгаар эрэмбэлэх" << endl;
+        cout << "3. Приметрээр эрэмбэлэх" << endl;
+        cout << "4. Дүрсүүдийг хэвлэх" << endl;
+        cout << "5. Нийт дүрсийн тоог хэвлэх" << endl;
+        cout << "6. Гарах" << endl;
+        cout << "Хийх үйлдлээ оруулна уу: ";
+        cin >> choice1;
+        switch(choice1) {
+            case 1: {
+                
+                    int choice;
+                    cout << "Оруулах дүрсээ сонгоно уу:" << endl;
+                    cout << "1. Circle" << endl;
+                    cout << "2. Square" << endl;
+                    cout << "3. Triangle" << endl;
+                    cout << "Оруулах дүрсээ оруулна уу: ";
+                    cin >> choice;
 
-    cout<<"Enter square side length a: ";
-    cin>>sa;
-    s.set_a(sa);
-
-    cout<<"Enter square x-coordinate: ";
-    cin>>sx;
-    s.set_x(sx);
-
-    cout<<"Enter square y-coordinate: ";
-    cin>>sy;
-    s.set_y(sy);
-
-    cout<<"Enter triangle side length a: ";
-    cin>>ta;
-    t.set_a(ta);
-
-    cout<<"Enter triangle x-coordinate: ";
-    cin>>tx;
-    t.set_x(tx);
-
-    cout<<"Enter triangle y-coordinate: ";
-    cin>>ty;
-    t.set_y(ty);
-
-    s1 = c.area();
-    cout<<"Circle area: " << s1 << endl;
-    s2 = s.area();
-    cout<<"Square area: " << s2 << endl;
-    s3 = t.area();
-    cout<<"Triangle area: " << s3 << endl;
-
-    float areas[] = { s1, s2, s3 };
-    // Sorting areas in descending order
-    for (int i = 0; i < 2; i++) {
-        for (int j = 0; j < 2 - i; j++) {
-            if (areas[j] < areas[j + 1]) {
-                float temp = areas[j];
-                areas[j] = areas[j + 1];
-                areas[j + 1] = temp;
+                    switch (choice) {
+                        case 1: {
+                            float x, y, radius;
+                            cout << "Тойргийн төвийн координат оруулна уу (x y): ";
+                            cin >> x >> y;
+                            cout << "Радиусыг оруулна уу: ";
+                            cin >> radius;
+                            Circle* circle = new Circle("Circle", x, y, radius);
+                            circle->area = circle->calculate_area();
+                            circle->perimeter = circle->calculate_perimeter();
+                            int i=Shape::getTotalShapes()-1;
+                            shapes[i] = circle;
+                            break;
+                        }
+                        case 2: {
+                            float x, y, length;
+                            cout << "Зүүн дээд оройн координат (x y): ";
+                            cin >> x >> y;
+                            cout << "Талын уртыг оруулна уу: ";
+                            cin >> length;
+                            Square* square = new Square("Square", x, y, length);
+                            square->area = square->calculate_area();
+                            square->perimeter = square->calculate_perimeter();
+                            int i=Shape::getTotalShapes()-1;
+                            shapes[i] = square;
+                            break;
+                        }
+                        case 3: {
+                            float x, y, length;
+                            cout << "Дээд оройн координатыг оруулна уу (x y): ";
+                            cin >> x >> y;
+                            cout << "Талын уртыг оруулна уу: ";
+                            cin >> length;
+                            Triangle* triangle = new Triangle("Triangle", x, y, length);
+                            triangle->area = triangle->calculate_area();
+                            triangle->perimeter = triangle->calculate_perimeter();
+                            int i=Shape::getTotalShapes()-1;
+                            shapes[i] = triangle;
+                            break;
+                        }
+                        default:
+                            cout << "1-3 хооронд тоо оруулна уу!" << endl;
+                            break;
+                    }
+                    break;
+                }
+                
+            case 2: {
+                int n=Shape::getTotalShapes();
+                for (int i = 0; i < n-1; ++i) {
+                    for (int j = 0; j < n - i - 1; ++j) {
+                        if (shapes[j]->calculate_area() > shapes[j + 1]->calculate_area()) {
+                            swap(shapes[j], shapes[j + 1]);
+                        }
+                    }
+                }
+                cout << "Shapes sorted by area:" << endl;
+                for (int i = 0; i < n; ++i) {
+                    shapes[i]->print();
+                    cout << endl;
+                }
+                break;
             }
-        }
-    }
+             case 3: {
+                int n=Shape::getTotalShapes();
+                for (int i = 0; i < n-1; ++i) {
+                    for (int j = 0; j < n- i - 1; ++j) {
+                        if (shapes[j]->calculate_perimeter() > shapes[j + 1]->calculate_perimeter()) {
+                            swap(shapes[j], shapes[j + 1]);
+                        }
+                    }
+                }
 
-    cout << "Areas in descending order:" << endl;
-    for (int i = 0; i < 3; i++) {
-        cout << i + 1 << ". " << areas[i] << endl;
-    }
-
-    int p1 = c.perimeter();
-    cout<<"Circle perimeter: " << p1 << endl;
-    int p2 = s.perimeter();
-    cout<<"Square perimeter: " << p2 << endl;
-    int p3 = t.perimeter();
-    cout<<"Triangle perimeter: " << p3 << endl;
-
-    float primetres[] = { p1, p2, p3 };
-    // Sorting areas in descending order
-    for (int i = 0; i < 2; i++) {
-        for (int j = 0; j < 2 - i; j++) {
-            if (primetres[j] < primetres[j + 1]) {
-                float temp = primetres[j];
-                primetres[j] = primetres[j + 1];
-                primetres[j + 1] = temp;
+                cout << "Shapes sorted by perimeter:" << endl;
+                for (int i = 0; i < n; ++i) {
+                    shapes[i]->print();
+                    cout << endl;
+                }
+                break;
             }
+            case 4: {
+                int n=Shape::getTotalShapes();
+                cout << "Shapes:" << endl;
+                for (int i = 0; i < n; ++i) {
+                    shapes[i]->print();
+                    cout << endl;
+                }
+                break;
+            }
+            case 5: {
+        cout << "Total number of shapes: " << Shape::getTotalShapes() << endl;
+        break;
+    }
+            case 6: {
+                cout << "Exiting..." << endl;
+                break;
+            }
+            default:
+                cout << "Invalid choice! Please enter 1-5." << endl;
+                break;
         }
-    }
+    }while (choice1 != 6);
 
-    cout << "perimeter in descending order:" << endl;
-    for (int i = 0; i < 3; i++) {
-        cout << i + 1 << ". " << primetres[i] << endl;
+    for (int i = 0; i < Shape::totalShapes; ++i) {
+        delete shapes[i];
     }
-
-    cout << "Total shapes created: " << shape::totalCount << endl;
 
     return 0;
 }
