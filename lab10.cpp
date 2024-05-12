@@ -20,8 +20,7 @@ private:
 public:
     Circle(double r)
     {
-        this->r = new double;
-        this->r = &r;
+        this->r = new double(r);
     }
 
     double area() override
@@ -58,7 +57,7 @@ public:
     double area() override
     {
 
-        return 0.5 * *a * *h
+        return 0.5 * *a * *h;
     }
 
     void print() override
@@ -66,27 +65,35 @@ public:
 
         cout << *a << " suuritai guraljin, " << *h << " ondortei " << endl;
     }
+    ~Triangle()
+    {
+        delete a;
+        delete h;
+    }
 };
 
 class Square : public Shape
 {
 
 private:
-    double side;
+    double *a;
 
 public:
-    Square(double s) : side(s) {}
+    Square(double a)
+    {
+        this->a = new double(a);
+    }
 
     double area() override
     {
 
-        return side * side;
+        return *a * *a;
     }
 
     void print() override
     {
 
-        cout << "Square with side " << side << endl;
+        cout << *a << " taltai kvadrat" << endl;
     }
 };
 
