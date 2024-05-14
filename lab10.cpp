@@ -148,40 +148,17 @@ public:
 
     void insert(T t, int index)
     {
-
-        if (index < 0 || index > size)
+        if (size < capacity)
         {
-
-            throw out_of_range("Index out of range");
-        }
-
-        if (size == capacity)
-        {
-
-            capacity *= 2;
-
-            T *newData = new T[capacity];
-
-            for (int i = 0; i < size; i++)
+            for (int i = size - 1; i > = index; i--)
             {
-
-                newData[i] = data[i];
+                data[i + 1] = data[i];
             }
-
-            delete[] data;
-
-            data = newData;
+            data[index] = t;
+            size++;
         }
-
-        for (int i = size; i > index; i--)
-        {
-
-            data[i] = data[i - 1];
-        }
-
-        data[index] = t;
-
-        size++;
+        else
+            cout << "bagtaamj duursen" << endl;
     }
 
     T get(int index)
