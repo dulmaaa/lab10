@@ -32,7 +32,7 @@ public:
     void print() override
     {
 
-        cout << *r << " radiustai toirog." << endl;
+        cout << *r << " radiustai toirog" << endl;
     }
     ~Circle()
     {
@@ -110,9 +110,10 @@ private:
     int size;
 
 public:
-    List(int initialCapacity = 10) : capacity(initialCapacity), size(0)
+    List()
     {
-
+        size = 0;
+        this->capacity = 25;
         data = new T[capacity];
     }
 
@@ -124,33 +125,17 @@ public:
 
     void add(T t)
     {
-
-        if (size == capacity)
-        {
-
-            capacity *= 2;
-
-            T *newData = new T[capacity];
-
-            for (int i = 0; i < size; i++)
-            {
-
-                newData[i] = data[i];
-            }
-
-            delete[] data;
-
-            data = newData;
-        }
-
-        data[size++] = t;
+        if (size < capacity)
+            data[size++] = t;
+        else
+            cout << "bagtaamj duursen" << endl;
     }
 
     void insert(T t, int index)
     {
         if (size < capacity)
         {
-            for (int i = size - 1; i > = index; i--)
+            for (int i = size - 1; i >= index; i--)
             {
                 data[i + 1] = data[i];
             }
@@ -167,7 +152,7 @@ public:
         if (index < 0 || index >= size)
         {
 
-            throw out_of_range("Index out of range");
+            cout << "index oldsongui" << endl;
         }
 
         return data[index];
@@ -179,13 +164,14 @@ public:
         if (index < 0 || index >= size)
         {
 
-            throw out_of_range("Index out of range");
+            cout << "index oldsongui" << endl;
         }
 
         for (int i = index; i < size - 1; i++)
         {
 
-            data[i] = data[i + 1];
+            data[i] = data[i + 1]; // omnohd in daraagin utguudig ogno
+            // indexiig darj bichne
         }
 
         size--;
