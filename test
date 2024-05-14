@@ -1,0 +1,290 @@
+#include <iostream>
+#include <cmath>
+#include <cstring>
+#include <cstdlib>
+#include <ctime>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+class Shape {
+public:
+    static int totalShapes;
+    char* name;
+    Shape(const char* name) {
+        this->name = new char[strlen(name) + 1];
+        strcpy(this->name, name);
+        totalShapes++;
+    }
+    virtual ~Shape() {
+        delete[] name;
+        totalShapes--;
+    }
+    virtual void print() const {
+        cout << "Shape: " << name << endl;
+    }
+    virtual float calculate_area() const = 0;
+    virtual float calculate_perimeter() const = 0;
+    static int getTotalShapes() {
+        return totalShapes;
+    }
+};
+int Shape::totalShapes = 0;
+
+class _2DShape : public Shape {
+public:
+    float area, perimeter;
+    _2DShape(const char* name) : Shape(name), area(0), perimeter(0) {}
+    virtual ~_2DShape() {}
+    void print() const override {
+        Shape::print();
+        cout << "Area: " << area << endl;
+        cout << "Perimeter: " << perimeter << endl;
+    }
+};
+
+class Circle : public _2DShape {
+public:
+    float radius;
+    Circle(const char* name, float radius)
+        : _2DShape(name), radius(radius) {
+        area = calculate_area();
+        perimeter = calculate_perimeter();
+    }
+    float calculate_area() const override {
+        return M_PI * radius * radius;
+    }
+    float calculate_perimeter() const override {
+        return 2 * M_PI * radius;
+    }
+    void print() const override {
+        _2DShape::print();
+        cout << "Radius: " << radius << endl;
+    }
+};
+
+class Square : public _2DShape {
+public:
+    float length;
+    Square(const char* name, float length)
+        : _2DShape(name), length(length) {
+        area = calculate_area();
+        perimeter = calculate_perimeter();
+    }
+    float calculate_area() const override {
+        return length * length;
+    }
+    float calculate_perimeter() const override {
+        return 4 * length;
+    }
+    void print() const override {
+        _2DShape::print();
+        cout << "Length: " << length << endl;
+    }
+};
+
+class Triangle : public _2DShape {
+public:
+    float length;
+    Triangle(const char* name, float length)
+        : _2DShape(name), length(length) {
+        area = calculate_area();
+        perimeter = calculate_perimeter();
+    }
+    float calculate_area() const override {
+        return 0.25 * sqrt(3) * length * length;
+    }
+    float calculate_perimeter() const override {
+        return 3 * length;
+    }
+    void print() const override {
+        _2DShape::print();
+        cout << "Length: " << length << endl;
+    }
+};
+
+template <typename T>
+class List {
+    vector<T*> elements;
+public:
+    void add(T* t) {
+        elements.push_back(t);
+    }
+    void insert(T* t, int index) {
+        elements.insert(elements.begin() + index, t);
+    }
+    T* get(int index) {
+        if (index >= 0 && index < elements.size()) {
+            return elements[index];
+        }
+        return nullptr;
+    }
+    void remove(int index) {
+        if (index >= 0 && index < elements.size()) {
+            delete elements[index];
+            elements.erase(elements.begin() + index);
+        }
+    }
+    int length() {
+        return elements.size();
+    }
+    void sort_by_area() {
+        sort(elements.begin(), elements.end(), [](T* a, T* b) {
+            return a->calculate_area() < b->calculate_area();
+        });
+    }
+    void print() {
+        for (T* element : elements) {
+            element->print();
+            cout << endl;
+        }
+    }
+    ~List() {
+        for (T* element : elements) {
+            delete element;
+        }
+    }
+};
+
+int main() {
+    srand(time(0));
+
+    List<_2DShape> shapes;
+
+    // Generate 20-30 random shapes
+    int numShapes = rand() % 11 + 20; // Random number between 20 and 30
+    for (int i = 0; i < numShapes; ++i) {
+        int shapeType = rand() % 3;
+        _2DShape* shape = nullptr;
+        switch (shapeType) {
+            case 0: {
+                float radius = static_cast<float>(rand() % 100 + 1);
+                shape = new Circle("Circle", radius);
+                break;
+            }
+            case 1: {
+                float length = static_cast<float>(rand() % 100 + 1);
+                shape = new Square("Square", length);
+                break;
+            }
+            case 2: {
+                float length = static_cast<float>(rand() % 100 + 1);
+                shape = new Triangle("Triangle", length);
+                break;
+            }
+        }
+        shapes.add(shape);
+    }
+
+    int choice1;
+
+    do {
+        cout << "Select an action to perform" << endl;
+        cout << "1. Дүрс нэмэх" << endl;
+        cout << "2. Жагсаалтын дунд дүрс нэмэх " << endl;
+        cout << "3. Аль нэг элементийн утгыг хэвлэх" << endl;
+        cout << "4. Аль нэг элементийг устгах" << endl;
+        cout << "5. Дүрсийн тоог хэвлэх" << endl;
+        cout << "6. Талбайгаар хэвлэх" << endl;
+        cout << "7. Бүх дүрс хэвлэх" << endl;
+        cout << "8. Гарах" << endl;
+        cout << "Хийх үйлдлээ сонгоно уу: ";
+        cin >> choice1;
+
+        switch(choice1) {
+            case 1: {
+                int shapeType = rand() % 3;
+                _2DShape* shape = nullptr;
+                switch (shapeType) {
+                    case 0: {
+                        float radius = static_cast<float>(rand() % 100 + 1);
+                        shape = new Circle("Circle", radius);
+                        break;
+                    }
+                    case 1: {
+                        float length = static_cast<float>(rand() % 100 + 1);
+                        shape = new Square("Square", length);
+                        break;
+                    }
+                    case 2: {
+                        float length = static_cast<float>(rand() % 100 + 1);
+                        shape = new Triangle("Triangle", length);
+                        break;
+                    }
+                }
+                shapes.add(shape);
+                break;
+            }
+            case 2: {
+                int index;
+                cout << "Хэдэд оруулах вэ?: ";
+                cin >> index;
+                int shapeType = rand() % 3;
+                _2DShape* shape = nullptr;
+                switch (shapeType) {
+                    case 0: {
+                        float radius = static_cast<float>(rand() % 100 + 1);
+                        shape = new Circle("Circle", radius);
+                        break;
+                    }
+                    case 1: {
+                        float length = static_cast<float>(rand() % 100 + 1);
+                        shape = new Square("Square", length);
+                        break;
+                    }
+                    case 2: {
+                        float length = static_cast<float>(rand() % 100 + 1);
+                        shape = new Triangle("Triangle", length);
+                        break;
+                    }
+                }
+                
+                shapes.insert(shape, index);
+                break;
+            }
+            case 3: {
+                int index;
+                cout << "Enter the index of the element: ";
+                cin >> index;
+                _2DShape* shape = shapes.get(index);
+                if (shape) {
+                    shape->print();
+                } else {
+                    cout << "Invalid index!" << endl;
+                }
+                break;
+            }
+            case 4: {
+                int index;
+                cout << "Устгах элементийн дугаарыг оруулна уу: ";
+                cin >> index;
+                shapes.remove(index);
+                break;
+            }
+            case 5: {
+                cout << "Нийт дүрсийн тоо: " << shapes.length() << endl;
+                break;
+            }
+            case 6: {
+                shapes.sort_by_area();
+                cout << "Shapes sorted by area." << endl;
+                break;
+            }
+            case 7: {
+                shapes.print();
+                break;
+            }
+            case 8: {
+                cout << "Exiting..." << endl;
+                break;
+            }
+            default: {
+                cout << "1-8 сонгоно уу." << endl;
+                break;
+            }
+        }
+    } while (choice1 != 8);
+
+    return 0;
+}
