@@ -26,7 +26,7 @@ public:
     double area() override
     {
 
-        return 3.14159 * *r * *r; // haygiin r-d hadgalssan tul * ashiglaj dotorh utgiin ashiglana.
+        return 3.14 * *r * *r; // haygiin r-d hadgalssan tul * ashiglaj dotorh utgiin ashiglana.
     }
 
     void print() override
